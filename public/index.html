@@ -6,10 +6,51 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="javascripts/comments.js"></script>
+    <style>
+        .strike {
+            text-decoration: line-through;
+        }
+
+        .strike:hover {
+            text-decoration: line-through;
+        }
+    </style>
+    <script type="text/javascript">
+        function update(elem) {
+            var bool = $(elem).hasClass("strike");
+            var myobj = { Name: $("#username").val(), Comment: $(elem).text(), Done: bool };
+            var jobj = JSON.stringify(myobj);
+            var url = "comment";
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: jobj,
+                contentType: "application/json; charset=utf-8",
+                success: function(data, textStatus) {
+                    console.log(data);
+                    // console.log(data);
+                    // console.log(textStatus);
+                    // var everything = "<ul>";
+                    // for (var comment in data) {
+                    //     com = data[comment];
+                    //     everything += "<li onclick=\"ChangeTextDecoration(this);\">" + com.Comment + "</li>";
+                    // }
+                    // everything += "</ul>";
+                    // $("#comments").html(everything);
+                }
+            })
+        };
+
+        function ChangeTextDecoration(elem) {
+            $(elem).toggleClass("strike");
+            $(elem).toggleClass("disabled");
+            update(elem);
+        }
+    </script>
 </head>
 
 <body>
-    <div class="container mt-5">
+    <div class="container col-sm-4 mt-5">
         <div class="card">
             <h5 class="card-header">To-Do List</h5>
             <div class="main-form mx-auto">
@@ -18,14 +59,29 @@
                     <input class="form-control ml-2" type="password" id="password" placeholder="Password"><br>
                 </form>
             </div>
-            
+
             <div class="row mx-auto">
                 <button class="btn btn-primary mb-2 mr-2" id="loginBtn">Log In</button>
                 <button class="btn btn-primary mb-2 ml-2" id="registerBtn">Register</button>
+
             </div>
             <div id="json"></div>
             <div id="done"></div>
-            <div id="comments"></div>
+            <div class="col-sm-6 mx-auto">
+                <div class="row mt-5 mb-2 d-none" id="taskadder">
+                    <div class="col-sm-7">
+                        <input class="form-control ml-2" type="text" id="newTask" placeholder="New Task">
+                    </div>
+                    <div class="col-sm-4">
+                        <button class="btn btn-primary mb-2" id="addTask">Add Task</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="comments"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>

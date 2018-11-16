@@ -7,7 +7,7 @@ mongoose.connect('mongodb://localhost/commentDB', { useNewUrlParser: true }); //
 var commentSchema = mongoose.Schema({ //Defines the Schema for this database
     Name: String,
     Comment: String,
-    Done: String
+    Done: Boolean
 });
 
 var userSchema = mongoose.Schema({ //Defines the Schema for this database
@@ -29,20 +29,36 @@ router.post('/comment', function(req, res, next) {
     console.log("POST comment route");
     console.log(req.body);
 
-    var newcomment = new Comment(req.body);
-    console.log(newcomment);
-    newcomment.save(function(err, post) {
-        if (err) return console.error(err);
-        console.log(post);
-        res.sendStatus(200);
-    });
+    Comment.find({ Name: req.body.Name, Comment: req.body.Comment }, function(err, commentList) { //Calls the find() method on your database
+        if (err) return console.error(err); //If there's an error, print it out
+        else {
+            if (Object.keys(commentList).length === 0) {
+                console.log("here2");
+                var newcomment = new Comment(req.body);
+                console.log(newcomment);
+                newcomment.save(function(err, post) {
+                    if (err) return console.error(err);
+                    console.log(post);
+                    res.sendStatus(200);
+                });
+            }
+            else {
+                console.log(req.body.Done);
+                var myquery = { Name: req.body.Name, Comment: req.body.Comment };
+                var newvalues = { $set: { Done: req.body.Done } };
+                db.collection("comments")
+                    .updateOne(myquery, newvalues);
+                res.sendStatus(200);
+            }
+        }
+    })
 });
 
 
 router.get('/comment', function(req, res, next) {
     console.log("In the GET route?");
-    var find = req.query.q;
-    Comment.find(function(err, commentList) { //Calls the find() method on your database
+    var name = req.query.Name;
+    Comment.find({ Name: req.query.Name }, function(err, commentList) { //Calls the find() method on your database
         if (err) return console.error(err); //If there's an error, print it out
         else {
             console.log(commentList); //Otherwise console log the comments you found

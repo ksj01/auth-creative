@@ -3,7 +3,6 @@ $(document).ready(function() {
     $("#loginBtn").click(function() {
         var use = $('#username').val();
         var pass = $('#password').val();
-        console.log("here");
 
         var url = "login?use=" + use + "&pass=" + pass;
         $.ajax({
@@ -21,7 +20,7 @@ $(document).ready(function() {
                         everything = "<h4>Error. Incorrect Password.</h4>";
                     }
                     else {
-                        everything = "<h4>Login Successful!.</h4>";
+                        getTasks();
                     }
                 }
                 $("#comments").html(everything);
@@ -46,10 +45,7 @@ $(document).ready(function() {
             contentType: "application/json; charset=utf-8",
             success: function(data, textStatus) {
                 console.log(textStatus);
-                if (textStatus != "success") {
-                    console.log("Already taken.");
-                }
-                $("#done").html(textStatus);
+                getTasks();
             },
             error: function(xhr) {
                 var everything = "<h4>Error. Username probably already taken.</h4>";
@@ -59,9 +55,38 @@ $(document).ready(function() {
     });
 
 
-    $("#deleteComments").click(function() {
+    function getTasks() {
+        
+        var myobj = { Name: $("#username").val() };
+        var url = "comment";
+        $.ajax({
+            url: url,
+            type: "GET",
+            data: myobj,
+            contentType: "application/json; charset=utf-8",
+            success: function(data, textStatus) {
+                console.log(data);
+                // console.log(data);
+                // console.log(textStatus);
+                var everything = "<ul class=\"list-group mb-5\">";
+                var strike = "";
+                for (var comment in data) {
+                    com = data[comment];
+                    if (com.Done) {
+                        strike = "strike disabled";
+                    }
+                        everything += "<li class=\"list-group-item font-weight-bold " + strike + "\" onclick=\"ChangeTextDecoration(this);\">" + com.Comment + "</li>";
+                }
+                everything += "</ul>";
+                $("#comments").html(everything);
+                $('#taskadder').removeClass('d-none');
+            }
+        })
+    };
 
-        var myobj = { Delete: "delete" };
+
+    $("#addTask").click(function() {
+        var myobj = { Name: $("#username").val(), Comment: $("#newTask").val(), Done: "false" };
         jobj = JSON.stringify(myobj);
 
         var url = "comment";
@@ -71,26 +96,8 @@ $(document).ready(function() {
             data: jobj,
             contentType: "application/json; charset=utf-8",
             success: function(data, textStatus) {
-                $("#done").html(textStatus);
             }
         })
-    });
-
-
-    $("#postComment").click(function() {
-        var myobj = { Name: $("#name").val(), Comment: $("#comment").val() };
-        jobj = JSON.stringify(myobj);
-        $("#json").text(jobj);
-
-        var url = "comment";
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: jobj,
-            contentType: "application/json; charset=utf-8",
-            success: function(data, textStatus) {
-                $("#done").html(textStatus);
-            }
-        })
+        getTasks();
     });
 });
