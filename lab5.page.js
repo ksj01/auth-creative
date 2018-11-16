@@ -20,6 +20,7 @@ var Lab5 = function() {
 
   //route URL (when appended to the base one)
   self.commentRoute = "/comment"; //MUST work for all (GET, POST, DELETE)
+  self.loginRoute = "/login"; //MUST work for all (GET, POST, DELETE)
 }
 
 module.exports = new Lab5();

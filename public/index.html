@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Comments!</title>
+    <title>Get It Done</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="javascripts/comments.js"></script>
@@ -11,18 +11,17 @@
 <body>
     <div class="container mt-5">
         <div class="card">
-            <h5 class="card-header">Comment Board</h5>
-            <form class="form-inline mt-2 mb-2 mx-auto" id="commentForm" action="">
-                <input class="form-control mr-2" type="text" id="name" placeholder="Name"><br>
-                <input class="form-control ml-2 mr-5" type="text" id="comment" placeholder="Comment"><br>
-                <input class="form-control ml-5" type="text" id="user" placeholder="Search By User"><br>
-            </form>
-
+            <h5 class="card-header">To-Do List</h5>
+            <div class="main-form mx-auto">
+                <form class="form-inline mt-2 mb-2 mx-auto" id="commentForm" action="">
+                    <input class="form-control mr-2" type="text" id="username" placeholder="Username"><br>
+                    <input class="form-control ml-2" type="password" id="password" placeholder="Password"><br>
+                </form>
+            </div>
+            
             <div class="row mx-auto">
-                <button class="btn btn-primary ml-5 mr-5 mb-2" id="postComment">Post Comment</button>
-                <button class="btn btn-primary ml-5 mr-5 mb-2" id="getComments">Get Comments</button>
-                <button class="btn btn-primary ml-5 mr-5 mb-2" id="deleteComments">Delete All</button>
-                <button class="btn btn-primary ml-5 mr-5 mb-2" id="getUserComments">Get User Comments</button>
+                <button class="btn btn-primary mb-2 mr-2" id="loginBtn">Log In</button>
+                <button class="btn btn-primary mb-2 ml-2" id="registerBtn">Register</button>
             </div>
             <div id="json"></div>
             <div id="done"></div>

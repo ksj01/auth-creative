@@ -1,40 +1,63 @@
 $(document).ready(function() {
-    $("#getComments").click(function() {
-        $.getJSON('comment', function(data) {
-            console.log(data);
-            var everything = "<ul>";
-            for (var comment in data) {
-                com = data[comment];
-                everything += "<li> Name: " + com.Name + " -- Comment: " + com.Comment + "</li>";
-            }
-            everything += "</ul>";
-            $("#comments").html(everything);
-        })
-    });
 
-    $("#getUserComments").click(function() {
-        var myobj = $('#user').val();
+    $("#loginBtn").click(function() {
+        var use = $('#username').val();
+        var pass = $('#password').val();
+        console.log("here");
 
-        var url = "comment?q=" + myobj;
+        var url = "login?use=" + use + "&pass=" + pass;
         $.ajax({
             url: url,
             type: "GET",
-            data: myobj,
+            data: use,
             contentType: "application/json; charset=utf-8",
             success: function(data, textStatus) {
                 console.log(data);
                 console.log(textStatus);
-                var everything = "<ul>";
+                var everything;
                 for (var comment in data) {
                     com = data[comment];
-                    everything += "<li> Name: " + com.Name + " -- Comment: " + com.Comment + "</li>";
+                    if (pass != com.Password) {
+                        everything = "<h4>Error. Incorrect Password.</h4>";
+                    }
+                    else {
+                        everything = "<h4>Login Successful!.</h4>";
+                    }
                 }
-                everything += "</ul>";
                 $("#comments").html(everything);
-                $("#done").html(textStatus);
             }
         })
     });
+
+    $("#registerBtn").click(function() {
+        console.log("Register Clicked");
+        var use = $('#username').val();
+        var pass = $('#password').val();
+        console.log("here");
+
+        var myobj = { Name: $("#username").val(), Password: $("#password").val() };
+        jobj = JSON.stringify(myobj);
+
+        var url = "login";
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: jobj,
+            contentType: "application/json; charset=utf-8",
+            success: function(data, textStatus) {
+                console.log(textStatus);
+                if (textStatus != "success") {
+                    console.log("Already taken.");
+                }
+                $("#done").html(textStatus);
+            },
+            error: function(xhr) {
+                var everything = "<h4>Error. Username probably already taken.</h4>";
+                $("#comments").html(everything);
+            }
+        })
+    });
+
 
     $("#deleteComments").click(function() {
 
@@ -52,6 +75,7 @@ $(document).ready(function() {
             }
         })
     });
+
 
     $("#postComment").click(function() {
         var myobj = { Name: $("#name").val(), Comment: $("#comment").val() };
