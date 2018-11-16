@@ -3,29 +3,44 @@ $(document).ready(function() {
     $("#loginBtn").click(function() {
         var use = $('#username').val();
         var pass = $('#password').val();
-
-        var url = "login?use=" + use + "&pass=" + pass;
-        $.ajax({
-            url: url,
-            type: "GET",
-            data: use,
-            contentType: "application/json; charset=utf-8",
-            success: function(data, textStatus) {
-                console.log(data);
-                console.log(textStatus);
-                var everything;
-                for (var comment in data) {
-                    com = data[comment];
-                    if (pass != com.Password) {
-                        everything = "<h4>Error. Incorrect Password.</h4>";
+        if (use == "" || pass == "") {
+            everything = "<h4>Error. Username/Password cannot be empty.</h4>";
+            $("#comments").html(everything);
+            $('#taskadder').addClass('d-none');
+        }
+        else {
+            var url = "login?use=" + use + "&pass=" + pass;
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: use,
+                contentType: "application/json; charset=utf-8",
+                success: function(data, textStatus) {
+                    console.log(data);
+                    console.log(textStatus);
+                    var everything;
+                    if (Object.keys(data).length === 0) {
+                        everything = "<h4>Error. No User.</h4>";
+                        $("#comments").html(everything);
+                        $('#taskadder').addClass('d-none');
                     }
                     else {
-                        getTasks();
+                        for (var comment in data) {
+                            com = data[comment];
+                            if (pass != com.Password) {
+                                everything = "<h4>Error. Incorrect Password.</h4>";
+                                $("#comments").html(everything);
+                                $('#taskadder').addClass('d-none');
+                            }
+                            else {
+                                getTasks();
+                            }
+                        }
                     }
+
                 }
-                $("#comments").html(everything);
-            }
-        })
+            })
+        }
     });
 
     $("#registerBtn").click(function() {
@@ -50,13 +65,14 @@ $(document).ready(function() {
             error: function(xhr) {
                 var everything = "<h4>Error. Username probably already taken.</h4>";
                 $("#comments").html(everything);
+                $('#taskadder').addClass('d-none');
             }
         })
     });
 
 
     function getTasks() {
-        
+
         var myobj = { Name: $("#username").val() };
         var url = "comment";
         $.ajax({
@@ -75,7 +91,7 @@ $(document).ready(function() {
                     if (com.Done) {
                         strike = "strike disabled";
                     }
-                        everything += "<li class=\"list-group-item font-weight-bold " + strike + "\" onclick=\"ChangeTextDecoration(this);\">" + com.Comment + "</li>";
+                    everything += "<li class=\"list-group-item font-weight-bold " + strike + "\" onclick=\"ChangeTextDecoration(this);\">" + com.Comment + "</li>";
                 }
                 everything += "</ul>";
                 $("#comments").html(everything);
@@ -95,8 +111,7 @@ $(document).ready(function() {
             type: "POST",
             data: jobj,
             contentType: "application/json; charset=utf-8",
-            success: function(data, textStatus) {
-            }
+            success: function(data, textStatus) {}
         })
         getTasks();
     });
